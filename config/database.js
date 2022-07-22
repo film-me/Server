@@ -1,14 +1,14 @@
-const mysql = require('mysql2/promise');
-const {logger} = require('./winston');
+const mysql = require("mysql2/promise");
+const { logger } = require("./winston");
 
 const pool = mysql.createPool({
-    host: '',
-    user: 'admin',
-    port: '3306',
-    password: '',
-    database: ''
+  host: "filmedb.cnp3as7bxs3z.us-west-1.rds.amazonaws.com",
+  user: "admin",
+  port: "3306",
+  password: "filme123",
+  database: "filmeDB",
 });
 
 module.exports = {
-    pool: pool
+  pool: pool,
 };
