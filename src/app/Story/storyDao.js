@@ -9,6 +9,16 @@ async function selectStory(connection, userId) {
   return selectStoryRow;
 }
 
+async function selectFrame(connection) {
+  const selectFrameQuery = `
+        select idx, imageURL
+        from Frames
+    `;
+  const selectFrameRow = await connection.query(selectFrameQuery);
+
+  return selectFrameRow;
+}
 module.exports = {
   selectStory,
+  selectFrame,
 };

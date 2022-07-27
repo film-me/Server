@@ -10,3 +10,11 @@ exports.getStory = async function (req, res) {
   const getStoryResponse = await storyProvider.getStory(userIdFromJWT);
   return res.send(getStoryResponse);
 };
+
+// 프레임 조회 api
+exports.getFrame = async function (req, res) {
+  //   const userIdFromJWT = req.verifiedToken.userId;
+  const userIdFromJWT = 1;
+  const getFrameResponse = await storyProvider.getFrame();
+  return res.send(getFrameResponse);
+};

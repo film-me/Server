@@ -12,3 +12,11 @@ exports.getStory = async function (userId) {
 
   return getStoryResult[0];
 };
+
+exports.getFrame = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getFrameResult = await storyDao.selectFrame(connection);
+  connection.release();
+
+  return getFrameResult[0];
+};
