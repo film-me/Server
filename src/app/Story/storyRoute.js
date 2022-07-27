@@ -5,5 +5,5 @@ module.exports = function (app) {
   app.get("/filme/story", story.getStory);
 
   // 프레임 조회 api
-  app.get("filme/frame", story.getFrame);
+  app.get("/filme/frame", story.getFrame);
 };
