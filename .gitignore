@@ -1,4 +1,5 @@
 package-lock.json
-node_modules/*
-log/*
+node_modules
+log
 aws.js
+database.js
