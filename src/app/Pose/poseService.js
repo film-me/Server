@@ -51,3 +51,17 @@ exports.likePose = async function (poseId, userId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+exports.insertPose = async function(memberIdx, imageURL) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const insertPoseResult = await poseDao.insertPose(connection, memberIdx, imageURL);
+
+    connection.release();
+    return response(baseResponse.SUCCESS);
+
+
+  } catch (err) {
+
+  }
+};

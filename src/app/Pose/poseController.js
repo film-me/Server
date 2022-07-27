@@ -25,4 +25,46 @@ exports.likePose = async function (req, res) {
   if (!poseId) return res.send(errResponse(baseResponse.POSE_ID_EMPTY));
   const likePoseResponse = await poseService.likePose(poseId, userIdFromJWT);
   return res.send(likePoseResponse);
+
 };
+
+/**
+ * API No. 3
+ * API Name : 포즈 전체 조회
+ * [GET] filme/pose
+ */
+exports.getPoses = async function(req, res) {
+  const filter = req.query.filter;        // default : 최신순, 1. 최신 순, 2. 좋아요 순
+
+  const getPosesResult = await poseProvider.getPoses(filter);
+  return res.send(getPosesResult);
+}
+
+
+/**
+ * API No. 4
+ * API Name : 특정 포즈 조회
+ * [GET] filme/pose/:poseIdx
+ */
+exports.getOnePose = async function (req, res) {
+
+  const poseIdx = req.params.poseIdx;
+  //const memberIdx = req.verifiedToken.userId;
+
+  const getOnePoseResponse = await poseProvider.getOnePose(poseIdx);
+
+  return res.send(getOnePoseResponse);
+};
+
+/**
+ * API No. 5
+ * API Name : 포즈 등록
+ * [POST] /filme/pose
+ */
+exports.insertPose = async function(req, res) {
+  const memberIdx = 1;
+  const imageURL = req.file.location;
+
+  const insertPoseResult = await poseService.insertPose(memberIdx, imageURL);
+  return res.send(insertPoseResult)
+}
