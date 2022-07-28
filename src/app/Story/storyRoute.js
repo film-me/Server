@@ -7,6 +7,15 @@ module.exports = function (app) {
   // 프레임 조회 api
   app.get("/filme/frame", story.getFrame);
 
-  // 특정 포토스토리 조회  
-  app.get('/filme/story/:storyIdx',story.getOneStory);
+  // 특정 포토스토리 조회
+  app.get("/filme/story/:storyIdx", story.getOneStory);
+
+  // 포토스토리 등록
+  app.post("/filme/story", story.postStory);
+
+  // 포토스토리 수정
+  app.put("/filme/story/:storyIdx", story.editStory);
+
+  // 포토스토리 삭제
+  app.patch("/filme/story/:storyIdx", story.deleteStory);
 };
