@@ -14,21 +14,21 @@ const CryptoJS = require('crypto-js');
 /**
  * API No. 
  * API Name : 내 포즈자랑 조회
- * [GET] /app/users
+ * [GET] /filme/mypage/pose
  */
 exports.getMyPoseList = async function (req, res) {
 
     /**
      * userId
      */
-     //const userId = req.verifiedToken.userId;
-     const userId = req.body.userId;
+     //   const userIdFromJWT = req.verifiedToken.userId;
+    const userIdFromJWT = 1;
 
-    if (!userId)
-        return res.send(response(baseResponse.USER_ID_EMPTY));
+    if (!userIdFromJWT)
+        return res.send(response(baseResponse.TOKEN_EMPTY));
    
     const getMyPoseResponse = await mypageProvider.getMyPoseList(
-       userId
+        userIdFromJWT
     );
 
     return res.send(getMyPoseResponse);
@@ -38,14 +38,14 @@ exports.getLikePoseList= async function(req, res) {
     /**
      * userId
      */
-     //const userId = req.verifiedToken.userId;
-     const userId = req.body.userId;
+     //const userIdFromJWT = req.verifiedToken.userId;
+     const userIdFromJWT = 1;
 
-    if (!userId)
-        return res.send(response(baseResponse.USER_ID_EMPTY));
+    if (!userIdFromJWT)
+        return res.send(response(baseResponse.TOKEN_EMPTY));
    
     const getLikePoseResponse = await mypageProvider.getLikePoseList(
-       userId
+        userIdFromJWT
     );
 
     return res.send(getLikePoseResponse);
@@ -64,14 +64,14 @@ exports.getMyInfo= async function(req, res) {
     /**
      * userID
      */
-     //const userId = req.verifiedToken.userId;
-     const userId = req.body.userId;
+     //const userIdFromJWT = req.verifiedToken.userId;
+     const userIdFromJWT = 1;
 
-    if (!userId)
-        return res.send(response( baseResponse.USER_ID_EMPTY));
+    if (!userIdFromJWT)
+        return res.send(response(baseResponse.TOKEN_EMPTY));
    
     const getMyInfoResponse = await mypageProvider.getMyInfo(
-       userId
+        userIdFromJWT
     );
     
         return res.send( getMyInfoResponse);
