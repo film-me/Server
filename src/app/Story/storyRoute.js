@@ -10,6 +10,9 @@ module.exports = function (app) {
   // 특정 포토스토리 조회
   app.get("/filme/story/:storyIdx", story.getOneStory);
 
-  // 특정 포토스토리 등록
+  // 포토스토리 등록
   app.post("/filme/story", story.postStory);
+
+  // 포토스토리 수정
+  app.put("/filme/story/:storyIdx", story.editStory);
 };

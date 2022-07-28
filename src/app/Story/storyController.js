@@ -65,3 +65,48 @@ exports.postStory = async function (req, res) {
 
   return res.send(postStoryResponse);
 };
+
+// 스토리 수정
+exports.editStory = async function (req, res) {
+  const idx = req.params.storyIdx;
+  const { imageURL, content, date } = req.body;
+
+  if (!idx)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "스토리 idx를 입력해주세요.",
+    });
+
+  if (!imageURL)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "이미지 url을 입력해주세요.",
+    });
+
+  if (!content)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "메모를 입력해주세요.",
+    });
+
+  if (!date)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "날짜를 입력해주세요.",
+    });
+
+  // TODO: 본인이 작성한 스토리가 맞는 지 확인하기
+
+  const editStoryResponse = await storyService.editStory(
+    idx,
+    imageURL,
+    content,
+    date
+  );
+
+  return res.send(editStoryResponse);
+};

@@ -30,3 +30,28 @@ exports.postStory = async function (memberIdx, imageURL, content, date) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+exports.editStory = async function (idx, imageURL, content, date) {
+  try {
+    const updateStoryParams = [imageURL, content, date, idx];
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+      await connection.beginTransaction(); // START TRANSACTION
+      const StoryIdResult = await storyDao.updateStory(
+        connection,
+        updateStoryParams
+      );
+      await connection.commit(); // COMMIT
+      connection.release();
+      return response(baseResponse.SUCCESS);
+    } catch (err) {
+      connection.rollback(); //ROLLBACK
+      connection.release();
+      logger.error(`App - editStory Transaction error\n: ${err.message}`);
+      return errResponse(baseResponse.DB_ERROR);
+    }
+  } catch (err) {
+    logger.error(`App - editStory Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};

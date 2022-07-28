@@ -34,7 +34,7 @@ async function selectStoryDetail(connection, storyIdx) {
   return selectStoryDetailRow[0];
 }
 
-// 특정 스토리 조회
+// 스토리 등록
 async function insertStory(connection, insertStoryParams) {
   const insertStoryQuery = `
       INSERT INTO Stories(memberIdx, imageURL, content, date)
@@ -47,9 +47,23 @@ async function insertStory(connection, insertStoryParams) {
   return insertStoryRow;
 }
 
+// 스토리 수정
+async function updateStory(connection, updateStoryParams) {
+  const updateStoryQuery = `
+  UPDATE Stories
+  SET imageURL = ?, content = ?, date = ? where idx = ?;
+  `;
+  const updateStoryRow = await connection.query(
+    updateStoryQuery,
+    updateStoryParams
+  );
+  return updateStoryRow;
+}
+
 module.exports = {
   selectStory,
   selectFrame,
   selectStoryDetail,
   insertStory,
+  updateStory,
 };
