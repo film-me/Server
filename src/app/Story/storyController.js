@@ -18,20 +18,50 @@ exports.getFrame = async function (req, res) {
   return res.send(getFrameResponse);
 };
 
-//특정 스토리 조회 
-exports.getOneStory= async function(req, res) {
-  
-   const storyIdx = req.params.storyIdx;
+//특정 스토리 조회
+exports.getOneStory = async function (req, res) {
+  const storyIdx = req.params.storyIdx;
 
-  if (!storyIdx)
-      return res.send(response( baseResponse.STORY_ID_EMPTY));
- 
-  const getOneStoryResponse = await storyProvider.getOneStory(
-     storyIdx
+  if (!storyIdx) return res.send(response(baseResponse.STORY_ID_EMPTY));
+
+  const getOneStoryResponse = await storyProvider.getOneStory(storyIdx);
+  if (getOneStoryResponse == 0)
+    return res.send(response(baseResponse.STORY_NOT_EXIST));
+  else return res.send(getOneStoryResponse);
+};
+
+// 스토리 등록
+exports.postStory = async function (req, res) {
+  // TODO: jwt 추가 후 memberIdx는 헤더로 받기
+  const { memberIdx, imageURL, content, date } = req.body;
+
+  if (!imageURL)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "이미지 url을 입력해주세요.",
+    });
+
+  if (!content)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "메모를 입력해주세요.",
+    });
+
+  if (!date)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "날짜를 입력해주세요.",
+    });
+
+  const postStoryResponse = await storyService.postStory(
+    memberIdx,
+    imageURL,
+    content,
+    date
   );
-  if (getOneStoryResponse == 0 )
-      return res.send(response( baseResponse.STORY_NOT_EXIST));
-  else 
-      return res.send( getOneStoryResponse);
 
+  return res.send(postStoryResponse);
 };

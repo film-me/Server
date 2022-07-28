@@ -27,14 +27,29 @@ async function selectStoryDetail(connection, storyIdx) {
   where S.idx = ? and S.status='ACTIVATE'  ;
   `;
   const selectStoryDetailRow = await connection.query(
-      selectStoryDetailQuery, storyIdx
+    selectStoryDetailQuery,
+    storyIdx
   );
 
   return selectStoryDetailRow[0];
+}
+
+// 특정 스토리 조회
+async function insertStory(connection, insertStoryParams) {
+  const insertStoryQuery = `
+      INSERT INTO Stories(memberIdx, imageURL, content, date)
+      VALUES (?, ?, ?, ?);
+  `;
+  const insertStoryRow = await connection.query(
+    insertStoryQuery,
+    insertStoryParams
+  );
+  return insertStoryRow;
 }
 
 module.exports = {
   selectStory,
   selectFrame,
   selectStoryDetail,
+  insertStory,
 };
