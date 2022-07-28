@@ -55,3 +55,16 @@ exports.editStory = async function (idx, imageURL, content, date) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// 스토리 삭제
+exports.deleteStory = async function (idx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const deleteStoryResult = await storyDao.deleteStory(connection, idx);
+    connection.release();
+    return response(baseResponse.SUCCESS);
+  } catch (err) {
+    logger.error(`App - deleteStory Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};

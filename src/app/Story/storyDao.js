@@ -2,7 +2,7 @@ async function selectStory(connection, userId) {
   const selectStoryQuery = `
         select s.idx, s.memberIdx, s.imageURL, s.content, s.date
         from Stories s
-        where s.memberIdx = ?
+        where s.memberIdx = ? and s.status = 'ACTIVATE';
     `;
   const selectStoryRow = await connection.query(selectStoryQuery, userId);
 
@@ -22,8 +22,8 @@ async function selectFrame(connection) {
 // 특정 스토리 조회
 async function selectStoryDetail(connection, storyIdx) {
   const selectStoryDetailQuery = `
-  select date_format(S.date,'%Y.%m.%d')  as storyDate, S.imageURL as storyImg , S.content as storyMemo
-  from Stories  as S
+  select date_format(S.date,'%Y.%m.%d') as date, S.imageURL , S.content
+  from Stories as S
   where S.idx = ? and S.status='ACTIVATE'  ;
   `;
   const selectStoryDetailRow = await connection.query(
@@ -60,10 +60,20 @@ async function updateStory(connection, updateStoryParams) {
   return updateStoryRow;
 }
 
+// 스토리 삭제
+async function deleteStory(connection, idx) {
+  const deleteStoryQuery = `
+  UPDATE Stories SET status = 'DELETED' where idx = ?;
+  `;
+  const deleteStoryRow = await connection.query(deleteStoryQuery, idx);
+  return deleteStoryRow;
+}
+
 module.exports = {
   selectStory,
   selectFrame,
   selectStoryDetail,
   insertStory,
   updateStory,
+  deleteStory,
 };

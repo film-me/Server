@@ -110,3 +110,21 @@ exports.editStory = async function (req, res) {
 
   return res.send(editStoryResponse);
 };
+
+// 스토리 삭제
+exports.deleteStory = async function (req, res) {
+  const idx = req.params.storyIdx;
+  if (!idx)
+    return res.json({
+      isSuccess: false,
+      code: 105,
+      message: "스토리 idx를 입력해주세요.",
+    });
+  const getOneStoryResponse = await storyProvider.getOneStory(idx);
+  if (getOneStoryResponse == 0) {
+    return res.send(response(baseResponse.STORY_NOT_EXIST));
+  } else {
+    const deleteStory = await storyService.deleteStory(idx);
+    return res.send(deleteStory);
+  }
+};

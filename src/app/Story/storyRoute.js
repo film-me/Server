@@ -15,4 +15,7 @@ module.exports = function (app) {
 
   // 포토스토리 수정
   app.put("/filme/story/:storyIdx", story.editStory);
+
+  // 포토스토리 삭제
+  app.patch("/filme/story/:storyIdx", story.deleteStory);
 };
