@@ -24,7 +24,7 @@ async function selectStoryDetail(connection, storyIdx) {
   const selectStoryDetailQuery = `
   select date_format(S.date,'%Y.%m.%d') as date, S.imageURL , S.content
   from Stories as S
-  where S.idx = ? and S.status='ACTIVATE'  ;
+  where S.idx = ? and S.status='ACTIVATE';
   `;
   const selectStoryDetailRow = await connection.query(
     selectStoryDetailQuery,
@@ -51,7 +51,7 @@ async function insertStory(connection, insertStoryParams) {
 async function updateStory(connection, updateStoryParams) {
   const updateStoryQuery = `
   UPDATE Stories
-  SET imageURL = ?, content = ?, date = ? where idx = ?;
+  SET imageURL = ?, content = ?, date = ? where idx = ? and status='ACTIVATE';
   `;
   const updateStoryRow = await connection.query(
     updateStoryQuery,
