@@ -17,3 +17,21 @@ exports.getFrame = async function (req, res) {
   const getFrameResponse = await storyProvider.getFrame();
   return res.send(getFrameResponse);
 };
+
+//특정 스토리 조회 
+exports.getOneStory= async function(req, res) {
+  
+   const storyIdx = req.params.storyIdx;
+
+  if (!storyIdx)
+      return res.send(response( baseResponse.STORY_ID_EMPTY));
+ 
+  const getOneStoryResponse = await storyProvider.getOneStory(
+     storyIdx
+  );
+  if (getOneStoryResponse == 0 )
+      return res.send(response( baseResponse.STORY_NOT_EXIST));
+  else 
+      return res.send( getOneStoryResponse);
+
+};

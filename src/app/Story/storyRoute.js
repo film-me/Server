@@ -6,4 +6,7 @@ module.exports = function (app) {
 
   // 프레임 조회 api
   app.get("/filme/frame", story.getFrame);
+
+  // 특정 포토스토리 조회  
+  app.get('/filme/story/:storyIdx',story.getOneStory);
 };

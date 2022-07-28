@@ -73,6 +73,18 @@ module.exports = {
     message: "중복된 이메일입니다.",
   },
 
+  STORY_ID_EMPTY: {
+    isSuccess: false,
+    code: 4001,
+    message: "storyId가 입력되지 않았습니다.",
+  },
+
+  STORY_NOT_EXIST: {
+    isSuccess: false,
+    code: 4002,
+    message: "해당 스토리가 존재하지 않습니다.",
+  },
+
   //Connection, Transaction 등의 서버 오류
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
   SERVER_ERROR: { isSuccess: false, code: 4001, message: "서버 에러" },

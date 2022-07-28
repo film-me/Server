@@ -19,6 +19,7 @@ module.exports = function () {
   require("../src/app/User/userRoute")(app);
   require("../src/app/Pose/poseRoute")(app);
   require("../src/app/Story/storyRoute")(app);
-
+  require("../src/app/Mypage/myPageRoute")(app);
+  
   return app;
 };

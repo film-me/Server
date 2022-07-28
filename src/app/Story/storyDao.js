@@ -18,7 +18,23 @@ async function selectFrame(connection) {
 
   return selectFrameRow;
 }
+
+// 특정 스토리 조회
+async function selectStoryDetail(connection, storyIdx) {
+  const selectStoryDetailQuery = `
+  select date_format(S.date,'%Y.%m.%d')  as storyDate, S.imageURL as storyImg , S.content as storyMemo
+  from Stories  as S
+  where S.idx = ? and S.status='ACTIVATE'  ;
+  `;
+  const selectStoryDetailRow = await connection.query(
+      selectStoryDetailQuery, storyIdx
+  );
+
+  return selectStoryDetailRow[0];
+}
+
 module.exports = {
   selectStory,
   selectFrame,
+  selectStoryDetail,
 };
