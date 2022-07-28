@@ -1,62 +1,129 @@
 const jwtMiddleware = require("../../../config/jwtMiddleware");
 const userProvider = require("../../app/User/userProvider");
 const userService = require("../../app/User/userService");
-const baseResponse = require("../../../config/baseResponseStatus");
-const {response, errResponse} = require("../../../config/response");
 
 const regExpPassword = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,12}$/; // 비밀번호 조합 및 길이 체크 정규식(최소 6 ~ 12자, 영문, 숫자 포함)
-const regexEmail = require("regex-email");
+const regExpId = /^[a-z]+[a-z0-9]{5,19}$/;
 const {emit} = require("nodemon");
 
 const Cache = require('memory-cache');
 const CryptoJS = require('crypto-js');
 
 /**
- * API No. 2
  * API Name : 유저 생성 (회원가입) API
  * [POST] /app/users
  */
 exports.postUsers = async function (req, res) {
 
     /**
-     * Body: email, password, phoneNumber, nickname, profileImage
+     * Body: identification, password, name, profileURL
      */
-    let {email, password, phoneNumber, nickname, profileImage} = req.body;
+    let {identification, password, name, profileURL} = req.body;
 
-    if (!profileImage)
-        profileImage = 'https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png';
+    // TODO: s3에 올린 이미지로 변경 예정
+    if (!profileURL)
+        profileURL = 'https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814049_1280.png';
 
-    // 이메일 빈 값 체크
-    if (!email)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
+    if (!identification) {
+        return res.json({
+            isSuccess: false,
+            code: 105,
+            message: "아이디를 입력 해주세요."
+        });
+    }
 
-    // 이메일 길이 체크
-    if (email.length > 30)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
+    if (!regExpId.test(identification)) {
+        return res.json({
+            isSuccess: false,
+            code: 301,
+            message: "아이디 형식을 정확하게 입력 해주세요."
+        });
+    }
 
-    // 이메일 형식 체크 (by 정규표현식)
-    if (!regexEmail.test(email))
-        return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+    if (!password) {
+        return res.json({
+            isSuccess: false,
+            code: 105,
+            message: "비밀번호를 입력 해주세요."
+        });
+    }
 
-    // 비밀번호 빈 값 체크
-    if (!password)
-        return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY));
+    if (!regExpPassword.test(password)) {
+        return res.json({
+            isSuccess: false,
+            code: 302,
+            message: "비밀번호 형식을 정확하게 입력 해주세요."
+        });
+    }
 
-    // 비밀번호 길이 체크
-    if (password.length > 30)
-        return res.send(response(baseResponse.SIGNUP_PASSWORD_LENGTH));
+    if(!name) {
+        return res.json({
+            isSuccess: false, 
+            code:105, 
+            message:"닉네임을 입력 해주세요."
+        }); 
+    }
 
-    // 비밀번호 형식 체크 (by 정규표현식)
-    if (!regExpPassword.test(password))
-        return res.send(response(baseResponse.SIGNUP_PASSWORD_ERROR_TYPE));
+    if (name.length > 20) {
+        return res.json({
+            isSuccess: false,
+            code: 109,
+            message: "닉네임은 10자리 미만으로 입력해주세요."
+        });
+    }
 
     const signUpResponse = await userService.createUser(
-        email,
+        identification,
         password,
-        phoneNumber,
-        nickname,
-        profileImage
+        name,
+        profileURL
     );
 
     return res.send(signUpResponse);
+};
+
+/**
+ * API Name : 로그인 API
+ * [POST] /app/users/login
+ */
+exports.login = async function (req, res) {
+    const {
+        identification, password
+    } = req.body;
+
+    // 이메일 체크
+    if (!identification) {
+        return res.json({
+            isSuccess: false,
+            code: 105,
+            message: "아이디를 입력 해주세요."
+        });
+    }
+
+    if (!regExpId.test(identification)) {
+        return res.json({
+            isSuccess: false,
+            code: 301,
+            message: "아이디 형식을 정확하게 입력 해주세요."
+        });
+    }
+
+    if (!password) {
+        return res.json({
+            isSuccess: false,
+            code: 105,
+            message: "비밀번호를 입력 해주세요."
+        });
+    }
+
+    const signInComplete = await userService.signIn(identification, password);
+    if (signInComplete.isSuccess == false) return res.json(signInComplete);
+    
+    return res.json({
+        isSuccess: true,
+        code: 200,
+        message: "로그인 성공",
+        userIdx: signInComplete.userIdx,
+        jwt: signInComplete.token
+    });
 };
