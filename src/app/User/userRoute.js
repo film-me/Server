@@ -1,7 +1,11 @@
 module.exports = function(app){
     const user = require('./userController');
     const jwtMiddleware = require('../../../config/jwtMiddleware');
-
-    // 2. 유저 생성 (회원가입) API
-    app.post('/app/users', user.postUsers);
-};
+  
+    // 회원가입 API
+    app.post('/filme/user', user.postUsers);
+  
+    // 로그인 API
+    app.post('/filme/user/login', user.login);
+  };
+  
