@@ -123,7 +123,6 @@ exports.login = async function (req, res) {
         isSuccess: true,
         code: 200,
         message: "로그인 성공",
-        userIdx: signInComplete.userIdx,
-        jwt: signInComplete.token
+        result: signInComplete
     });
 };
