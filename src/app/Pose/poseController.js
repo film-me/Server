@@ -2,6 +2,7 @@ const poseService = require("./poseService");
 const poseProvider = require("./poseProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
+const {CF} = require("nodeml");
 
 // 포즈자랑 삭제 api
 exports.deletePose = async function (req, res) {
@@ -34,7 +35,25 @@ exports.likePose = async function (req, res) {
  * [GET] filme/pose
  */
 exports.getPoses = async function(req, res) {
-  const filter = req.query.filter;        // default : 최신순, 1. 최신 순, 2. 좋아요 순
+  const filter = req.query.filter;        // default : 최신순, 1. 최신 순, 2. 좋아요 순, 3. 추천 순(수정 필요)
+
+  if (filter == 3) {
+    const {sample, CF, evaluation} = require('nodeml');
+    const userIdx = 1
+
+    let likeInfoResult = await poseProvider.getLikeInfo();
+    likeInfoResult = Object.values(JSON.parse(JSON.stringify(likeInfoResult)))
+
+    const cf = new CF();
+
+    cf.maxRelatedItem = 40;
+    cf.maxRelatedUser = 40;
+
+    cf.train(likeInfoResult, 'memberIdx', 'poseIdx', 'rate');
+
+    let getPosesResult = cf.recommendToUser(userIdx, 100);      // userIdx에게 count개의 pose추천
+    return res.send(getPosesResult)
+  }
 
   const getPosesResult = await poseProvider.getPoses(filter);
   return res.send(getPosesResult);
@@ -66,5 +85,8 @@ exports.insertPose = async function(req, res) {
   const imageURL = req.file.location;
 
   const insertPoseResult = await poseService.insertPose(memberIdx, imageURL);
+  console.log(insertPoseResult);
   return res.send(insertPoseResult)
 }
+
+

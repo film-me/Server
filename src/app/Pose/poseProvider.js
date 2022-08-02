@@ -43,3 +43,11 @@ exports.getOnePose = async function (poseIdx) {
 
   return getOnePoseResult;
 };
+
+exports.getLikeInfo = async function() {
+  const connection = await pool.getConnection(async(conn) => conn);
+  const result = await poseDao.getLikeInfo(connection);
+  connection.release();
+
+  return result;
+}
