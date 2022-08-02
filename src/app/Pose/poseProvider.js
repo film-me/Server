@@ -21,20 +21,27 @@ exports.getLike = async function (poseId, userId) {
 };
 
 exports.getPoses = async function (filter) {
-  const connection = await pool.getConnection(async (conn)=> conn);
-  let order = 'createdAt';
-  if(filter == 1) {
-    order = 'createdAt';
-  }
-  else if(filter == 2) {
-    order = 'likeCnt DESC';
+  const connection = await pool.getConnection(async (conn) => conn);
+  let order = "createdAt DESC";
+  if (filter == 1) {
+    order = "createdAt DESC";
+  } else if (filter == 2) {
+    order = "likeCnt DESC, createdAt DESC";
   }
 
   const getPosesResult = await poseDao.getPoses(connection, order);
   connection.release();
 
   return getPosesResult;
-}
+};
+
+exports.getRecommendPoses = async function (poseList) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getPosesResult = await poseDao.getRecommendPoses(connection, poseList);
+  connection.release();
+
+  return getPosesResult;
+};
 
 exports.getOnePose = async function (poseIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -42,4 +49,12 @@ exports.getOnePose = async function (poseIdx) {
   connection.release();
 
   return getOnePoseResult;
+};
+
+exports.getLikeInfo = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const result = await poseDao.getLikeInfo(connection);
+  connection.release();
+
+  return result;
 };

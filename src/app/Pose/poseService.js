@@ -62,6 +62,7 @@ exports.insertPose = async function(memberIdx, imageURL) {
 
 
   } catch (err) {
-
+    logger.error(`App - insertPose Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
   }
 };
