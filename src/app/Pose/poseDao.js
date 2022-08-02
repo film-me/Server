@@ -91,7 +91,7 @@ left join (
     from Likes l
     group by l.poseIdx
     ) x on x.poseIdx = p.idx
-where p.idx = ?;
+where p.idx = ? and p.status='ACTIVATE';
   `;
   const getOnePoseRow = await connection.query(getOnePoseQuery, [1, poseIdx, poseIdx]);
   return getOnePoseRow[0];
@@ -107,6 +107,15 @@ async function insertPose(connection, memberIdx, imageURL) {
   const insertPoseRow = await connection.query(insertPoseQuery, [memberIdx, imageURL])
 }
 
+async function getLikeInfo(connection) {
+  const testQuery = `
+    select poseIdx, memberIdx, 10 as rate
+    from Likes
+  `
+  const testRow = await connection.query(testQuery)
+  return testRow[0];
+}
+
 module.exports = {
   deletePose,
   likePose,
@@ -116,4 +125,5 @@ module.exports = {
   getOnePose,
   insertPose,
   getPoses,
+  getLikeInfo,
 };
