@@ -4,17 +4,21 @@ module.exports = function (app) {
   const imageUploader = require("./imageUploader");
 
   // 포즈자랑 삭제 api
-  app.patch("/filme/pose/:poseId", pose.deletePose);
+  app.patch("/filme/pose/:poseId", jwtMiddleware, pose.deletePose);
   // 포즈 좋아요
-  app.post("/filme/like/:poseId", pose.likePose);
+  app.post("/filme/like/:poseId", jwtMiddleware, pose.likePose);
 
   // 3. 포즈 전체 조회 API
-  app.get("/filme/pose", pose.getPoses);
+  app.get("/filme/pose", jwtMiddleware, pose.getPoses);
 
   // 4. 특정 포즈 조회 API
   app.get("/filme/pose/:poseIdx", jwtMiddleware, pose.getOnePose);
 
   // 5. 포즈 등록 API
-  app.post("/filme/pose", imageUploader.single("image"), pose.insertPose);
-
+  app.post(
+    "/filme/pose",
+    jwtMiddleware,
+    imageUploader.single("image"),
+    pose.insertPose
+  );
 };

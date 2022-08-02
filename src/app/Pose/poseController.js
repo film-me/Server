@@ -1,3 +1,4 @@
+const jwtMiddleware = require("../../../config/jwtMiddleware");
 const poseService = require("./poseService");
 const poseProvider = require("./poseProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
@@ -8,8 +9,9 @@ const { CF } = require("nodeml");
 exports.deletePose = async function (req, res) {
   let poseId = req.params.poseId;
   if (!poseId) return res.send(errResponse(baseResponse.POSE_ID_EMPTY));
-  //   const userIdFromJWT = req.verifiedToken.userId;
-  const userIdFromJWT = 1;
+
+  const userIdFromJWT = req.verifiedToken.userInfo;
+  if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
   const userId = poseProvider.getUserFromPose(poseId);
   if (userIdFromJWT != userId)
     return res.send(errResponse(baseResponse.NO_RIGHT));
@@ -21,8 +23,8 @@ exports.deletePose = async function (req, res) {
 // 포즈 좋아요 api
 exports.likePose = async function (req, res) {
   let poseId = req.params.poseId;
-  //   const userIdFromJWT = req.verifiedToken.userId;
-  const userIdFromJWT = 1;
+  const userIdFromJWT = req.verifiedToken.userInfo;
+  if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
   if (!poseId) return res.send(errResponse(baseResponse.POSE_ID_EMPTY));
   const likePoseResponse = await poseService.likePose(poseId, userIdFromJWT);
   return res.send(likePoseResponse);
@@ -35,7 +37,8 @@ exports.likePose = async function (req, res) {
  */
 exports.getPoses = async function (req, res) {
   const filter = req.query.filter; // default : 최신순, 1. 최신 순, 2. 좋아요 순, 3. 추천 순(수정 필요)
-  const userIdx = req.query.userIdx;
+  const userIdx = req.verifiedToken.userInfo;
+  if (!userIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
 
   if (filter == 3) {
     let likeInfoResult = await poseProvider.getLikeInfo();
@@ -70,7 +73,6 @@ exports.getPoses = async function (req, res) {
  */
 exports.getOnePose = async function (req, res) {
   const poseIdx = req.params.poseIdx;
-  //const memberIdx = req.verifiedToken.userId;
 
   const getOnePoseResponse = await poseProvider.getOnePose(poseIdx);
 
@@ -83,7 +85,8 @@ exports.getOnePose = async function (req, res) {
  * [POST] /filme/pose
  */
 exports.insertPose = async function (req, res) {
-  const memberIdx = 1;
+  const memberIdx = req.verifiedToken.userInfo;
+  if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
   const imageURL = req.file.location;
 
   const insertPoseResult = await poseService.insertPose(memberIdx, imageURL);
