@@ -19,7 +19,7 @@ async function selectUserFromPose(connection, poseId) {
   const getUserIdFromPoseQuery = `
         select p.memberIdx
         from Poses p
-        where p.id = ?
+        where p.id = ? and p.status = 'ACTIVATE'
     `;
   const selectUserFromPoseRow = await connection.query(likePoseQuery, poseId);
 
@@ -31,7 +31,7 @@ async function selectLike(connection, poseId, userId) {
         from Likes l 
         join Poses p on l.poseIdx = p.idx
         join Members m on l.memberIdx = m.idx
-        where p.idx = ? and m.idx = ?
+        where p.idx = ? and m.idx = ? and p.status = 'ACTIVATE' and m.status = 'ACTIVATE'
     `;
   const selectLikeFromPoseandUserRow = await connection.query(
     selectLikeFromPoseandUserQuery,
@@ -56,8 +56,8 @@ async function updateLikeStatus(connection, poseId, userId, status) {
 
 // 포즈 전체 조회
 async function getPoses(connection, order) {
-
-  const getPosesQuery = `
+  const getPosesQuery =
+    `
     select p.idx, p.imageURL, ifnull(x.likeCnt, 0) likeCnt
     from Poses p
            left join (
@@ -65,17 +65,42 @@ async function getPoses(connection, order) {
       from Likes l
       group by l.poseIdx
     ) x on x.poseIdx = p.idx
+    where p.status = 'ACTIVATE'
 
-    order by `+order+`;
+    order by ` +
+    order +
+    `;
   `;
 
   const getPosesRow = await connection.query(getPosesQuery);
   return getPosesRow[0];
 }
 
+// 추천포즈 조회
+async function getRecommendPoses(connection, poseList) {
+  let Query;
+  Query = `
+  select idx, imageURL
+  from Poses
+  where status = 'ACTIVATE' and idx in (${poseList})
+  order by FIELD(idx, ${poseList});
+  `;
+  const recommendData = await connection.query(Query);
+
+  Query = `
+  select idx, imageURL
+  from Poses
+  where status = 'ACTIVATE' and idx not in (${poseList})
+  order by createdAt desc;
+  `;
+  const data = await connection.query(Query);
+  const getPosesRow = recommendData[0].concat(data[0]);
+
+  return getPosesRow;
+}
+
 // 특정 포즈 조회
 async function getOnePose(connection, poseIdx) {
-
   const getOnePoseQuery = `
     select m.idx, m.profileURL, m.name,p.imageURL, ifnull(x.likeCnt, 0) likeCnt, p.views, ifnull((
     select count(*)
@@ -93,7 +118,11 @@ left join (
     ) x on x.poseIdx = p.idx
 where p.idx = ? and p.status='ACTIVATE';
   `;
-  const getOnePoseRow = await connection.query(getOnePoseQuery, [1, poseIdx, poseIdx]);
+  const getOnePoseRow = await connection.query(getOnePoseQuery, [
+    1,
+    poseIdx,
+    poseIdx,
+  ]);
   return getOnePoseRow[0];
 }
 
@@ -104,15 +133,19 @@ async function insertPose(connection, memberIdx, imageURL) {
     VALUES (?, ?);
   `;
 
-  const insertPoseRow = await connection.query(insertPoseQuery, [memberIdx, imageURL])
+  const insertPoseRow = await connection.query(insertPoseQuery, [
+    memberIdx,
+    imageURL,
+  ]);
 }
 
 async function getLikeInfo(connection) {
   const testQuery = `
     select poseIdx, memberIdx, 10 as rate
     from Likes
-  `
-  const testRow = await connection.query(testQuery)
+    where status='ACTIVATE'
+  `;
+  const testRow = await connection.query(testQuery);
   return testRow[0];
 }
 
@@ -126,4 +159,5 @@ module.exports = {
   insertPose,
   getPoses,
   getLikeInfo,
+  getRecommendPoses,
 };
