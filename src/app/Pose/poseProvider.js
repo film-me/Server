@@ -58,3 +58,14 @@ exports.getLikeInfo = async function () {
 
   return result;
 };
+
+exports.getStoryImageURL = async function(storyIdx) {
+  const connection = await pool.getConnection(async (conn) =>conn);
+  const getImageURLResult = await poseDao.getStoryImageURL(connection, storyIdx)
+  connection.release();
+
+  if (getImageURLResult.length == 0) {
+    return 0
+  }
+  return getImageURLResult[0].imageURL;
+}

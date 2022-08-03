@@ -149,6 +149,17 @@ async function getLikeInfo(connection) {
   return testRow[0];
 }
 
+async function getStoryImageURL(connection, storyIdx) {
+  const getStoryImageURLQuery = `
+    select imageURL
+    from Stories
+    where idx = ?;
+  `
+  const getStoryImageURLRow = await connection.query(getStoryImageURLQuery, [storyIdx])
+  return getStoryImageURLRow[0]
+}
+
+
 module.exports = {
   deletePose,
   likePose,
@@ -160,4 +171,5 @@ module.exports = {
   getPoses,
   getLikeInfo,
   getRecommendPoses,
+  getStoryImageURL
 };
