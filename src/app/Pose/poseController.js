@@ -36,7 +36,7 @@ exports.likePose = async function (req, res) {
  * [GET] filme/pose
  */
 exports.getPoses = async function (req, res) {
-  const filter = req.query.filter; // default : 최신순, 1. 최신 순, 2. 좋아요 순, 3. 추천 순(수정 필요)
+  const filter = req.query.filter; // 1. 최신 순, 2. 좋아요 순, 3. 추천 순(수정 필요)
   const userIdx = req.verifiedToken.userInfo;
   if (!userIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
 
@@ -81,15 +81,32 @@ exports.getOnePose = async function (req, res) {
 
 /**
  * API No. 5
- * API Name : 포즈 등록
- * [POST] /filme/pose
+ * API Name : 포즈 등록1(갤러리에서 가져오기)
+ * [POST] /filme/poseGallery
  */
-exports.insertPose = async function (req, res) {
-  const memberIdx = req.verifiedToken.userInfo;
-  if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
+exports.insertPoseFromGallery = async function (req, res) {
+  const memberIdx = req.verifiedToken.userInfo;xxxs
+
+  //if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
   const imageURL = req.file.location;
 
-  const insertPoseResult = await poseService.insertPose(memberIdx, imageURL);
-  console.log(insertPoseResult);
-  return res.send(insertPoseResult);
+  const insertPoseGalleryResult = await poseService.insertPose(memberIdx, imageURL);
+  return res.send(insertPoseGalleryResult);
 };
+
+/**
+ * API No. 6
+ * API Name : 포즈 등록2(포토스토리에서 가져오기)
+ * [POST] /filme/poseStory
+ */
+exports.insertPoseFromStory = async function (req, res) {
+  const memberIdx = req.verifiedToken.userInfo;
+  const {storyIdx} = req.body;
+
+  const imageURL = await poseProvider.getStoryImageURL(storyIdx);
+  if (imageURL == 0) {
+    return res.send("유효하지 않은 storyIdx 임요");   // 형식 맞춰서 수정 필요
+  }
+  const insertPoseStoryResult = await poseService.insertPose(memberIdx, imageURL);
+  return res.send(insertPoseStoryResult);
+}
