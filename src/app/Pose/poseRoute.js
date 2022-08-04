@@ -14,11 +14,14 @@ module.exports = function (app) {
   // 4. 특정 포즈 조회 API
   app.get("/filme/pose/:poseIdx", jwtMiddleware, pose.getOnePose);
 
-  // 5. 포즈 등록 API
+  // 5. 포즈 등록 API(갤러리)
   app.post(
-    "/filme/pose",
+    "/filme/poseGallery",
     jwtMiddleware,
     imageUploader.single("image"),
-    pose.insertPose
+    pose.insertPoseFromGallery
   );
+
+  // 6. 포즈 등록 API(스토리)
+  app.post("/filme/poseStory", jwtMiddleware, pose.insertPoseFromStory)
 };
