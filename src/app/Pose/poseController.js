@@ -85,9 +85,10 @@ exports.getOnePose = async function (req, res) {
  * [POST] /filme/poseGallery
  */
 exports.insertPoseFromGallery = async function (req, res) {
-  const memberIdx = req.verifiedToken.userInfo;xxxs
+  const memberIdx = req.verifiedToken.userInfo;
 
-  //if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
+  if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
+  console.log(req.file);
   const imageURL = req.file.location;
 
   const insertPoseGalleryResult = await poseService.insertPose(memberIdx, imageURL);
