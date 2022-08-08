@@ -43,9 +43,13 @@ exports.getRecommendPoses = async function (poseList) {
   return getPosesResult;
 };
 
-exports.getOnePose = async function (poseIdx) {
+exports.getOnePose = async function (userIdx, poseIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const getOnePoseResult = await poseDao.getOnePose(connection, poseIdx);
+  const getOnePoseResult = await poseDao.getOnePose(
+    connection,
+    userIdx,
+    poseIdx
+  );
   connection.release();
 
   return getOnePoseResult;
@@ -59,13 +63,16 @@ exports.getLikeInfo = async function () {
   return result;
 };
 
-exports.getStoryImageURL = async function(storyIdx) {
-  const connection = await pool.getConnection(async (conn) =>conn);
-  const getImageURLResult = await poseDao.getStoryImageURL(connection, storyIdx)
+exports.getStoryImageURL = async function (storyIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getImageURLResult = await poseDao.getStoryImageURL(
+    connection,
+    storyIdx
+  );
   connection.release();
 
   if (getImageURLResult.length == 0) {
-    return 0
+    return 0;
   }
   return getImageURLResult[0].imageURL;
-}
+};
