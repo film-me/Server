@@ -73,8 +73,9 @@ exports.getPoses = async function (req, res) {
  */
 exports.getOnePose = async function (req, res) {
   const poseIdx = req.params.poseIdx;
-
-  const getOnePoseResponse = await poseProvider.getOnePose(poseIdx);
+  const userIdx = req.verifiedToken.userInfo;
+  if (!userIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
+  const getOnePoseResponse = await poseProvider.getOnePose(userIdx, poseIdx);
 
   return res.send(getOnePoseResponse);
 };
@@ -85,12 +86,16 @@ exports.getOnePose = async function (req, res) {
  * [POST] /filme/poseGallery
  */
 exports.insertPoseFromGallery = async function (req, res) {
-  const memberIdx = req.verifiedToken.userInfo;xxxs
+  const memberIdx = req.verifiedToken.userInfo;
+  xxxs;
 
   //if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
   const imageURL = req.file.location;
 
-  const insertPoseGalleryResult = await poseService.insertPose(memberIdx, imageURL);
+  const insertPoseGalleryResult = await poseService.insertPose(
+    memberIdx,
+    imageURL
+  );
   return res.send(insertPoseGalleryResult);
 };
 
@@ -101,12 +106,15 @@ exports.insertPoseFromGallery = async function (req, res) {
  */
 exports.insertPoseFromStory = async function (req, res) {
   const memberIdx = req.verifiedToken.userInfo;
-  const {storyIdx} = req.body;
+  const { storyIdx } = req.body;
 
   const imageURL = await poseProvider.getStoryImageURL(storyIdx);
   if (imageURL == 0) {
-    return res.send("유효하지 않은 storyIdx 임요");   // 형식 맞춰서 수정 필요
+    return res.send("유효하지 않은 storyIdx 임요"); // 형식 맞춰서 수정 필요
   }
-  const insertPoseStoryResult = await poseService.insertPose(memberIdx, imageURL);
+  const insertPoseStoryResult = await poseService.insertPose(
+    memberIdx,
+    imageURL
+  );
   return res.send(insertPoseStoryResult);
-}
+};

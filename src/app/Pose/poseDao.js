@@ -100,7 +100,7 @@ async function getRecommendPoses(connection, poseList) {
 }
 
 // 특정 포즈 조회
-async function getOnePose(connection, poseIdx) {
+async function getOnePose(connection, userIdx, poseIdx) {
   const getOnePoseQuery = `
     select m.idx, m.profileURL, m.name,p.imageURL, ifnull(x.likeCnt, 0) likeCnt, p.views, ifnull((
     select count(*)
@@ -119,7 +119,7 @@ left join (
 where p.idx = ? and p.status='ACTIVATE';
   `;
   const getOnePoseRow = await connection.query(getOnePoseQuery, [
-    1,
+    userIdx,
     poseIdx,
     poseIdx,
   ]);
@@ -154,11 +154,12 @@ async function getStoryImageURL(connection, storyIdx) {
     select imageURL
     from Stories
     where idx = ?;
-  `
-  const getStoryImageURLRow = await connection.query(getStoryImageURLQuery, [storyIdx])
-  return getStoryImageURLRow[0]
+  `;
+  const getStoryImageURLRow = await connection.query(getStoryImageURLQuery, [
+    storyIdx,
+  ]);
+  return getStoryImageURLRow[0];
 }
-
 
 module.exports = {
   deletePose,
@@ -171,5 +172,5 @@ module.exports = {
   getPoses,
   getLikeInfo,
   getRecommendPoses,
-  getStoryImageURL
+  getStoryImageURL,
 };
