@@ -10,4 +10,11 @@ module.exports = function (app) {
 
   // 내 정보 조회
   app.get("/filme/mypage/myinfo", jwtMiddleware, mypage.getMyInfo);
+
+  // 프로필 사진 수정
+  app.post("/filme/mypage/edit-image",jwtMiddleware,mypage.editProfileImg);
+
+  //닉네임 수정
+  app.post("/filme/mypage/edit-nickname",jwtMiddleware,mypage.editNickname);
+
 };

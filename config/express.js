@@ -20,6 +20,6 @@ module.exports = function () {
   require("../src/app/Pose/poseRoute")(app);
   require("../src/app/Story/storyRoute")(app);
   require("../src/app/Mypage/mypageRoute")(app);
-  
+
   return app;
 };

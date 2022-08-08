@@ -34,3 +34,22 @@ exports.getMyInfo = async function (userId) {
     
       return selectUserInfoResult;
   };
+
+
+  exports.getUserNickname = async function (userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const selectUserNicknameResult = await mypageDao.selectUserNickname(connection,userId); 
+    connection.release();
+
+    
+      return selectUserNicknameResult;
+  };
+
+  exports.getUserImg = async function (userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const selectUserImgResult = await mypageDao.selectUserImg(connection,userId); 
+    connection.release();
+
+    
+      return selectUserImgResult;
+  };
