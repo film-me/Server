@@ -32,15 +32,25 @@ async function selectUserLikePoseList(connection, userId) {
 
 // 내 정보 조회
 async function selectUserInfo(connection, userId) {
-  const selectUserInfolQuery = `
-  select m.profileURL , m.name as nickname , m.level
-  from Members as m
-  where m.status = 'ACTIVATE' and m.idx = ? ;  
+  const selectUserInfoQuery = `
+    select m.profileURL , m.name as nickname , m.level, 
+           mod((
+              select count(p.idx)
+              from Poses p
+              where p.memberIdx = ?
+            ), 9) totalStamp, 
+              (9-mod((
+               select count(p.idx)
+               from Poses p
+               where p.memberIdx = ?
+             ), 9)) remain
+    from Members as m
+    where m.status = 'ACTIVATE' and m.idx = ?;
   `;
 
   const selectUserInfoRow = await connection.query(
-    selectUserInfolQuery,
-    userId
+    selectUserInfoQuery,
+    [userId, userId, userId]
   );
 
   return selectUserInfoRow[0];
