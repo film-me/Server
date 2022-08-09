@@ -34,7 +34,8 @@ exports.getOneStory = async function (req, res) {
 exports.postStory = async function (req, res) {
   const memberIdx = req.verifiedToken.userInfo;
   if (!memberIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
-  const { imageURL, content, date } = req.body;
+  const { content, date } = req.body;
+  const imageURL = req.file.location;
 
   if (!imageURL)
     return res.json({
