@@ -57,10 +57,15 @@ exports.insertPose = async function(memberIdx, imageURL) {
     const connection = await pool.getConnection(async (conn) => conn);
     const insertPoseResult = await poseDao.insertPose(connection, memberIdx, imageURL);
 
+    // 레벨 업
+    const checkPoseCountResult = await poseDao.checkPoseCount(connection, memberIdx);
+    if (checkPoseCountResult[0].poseCount % 9 == 0) {
+      const level = parseInt(checkPoseCountResult[0].poseCount / 9) + 1
+      await poseDao.levelUp(connection, memberIdx, level);
+    }
+
     connection.release();
     return response(baseResponse.SUCCESS);
-
-
   } catch (err) {
     logger.error(`App - insertPose Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
