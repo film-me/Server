@@ -5,6 +5,12 @@ const { logger } = require("../../../config/winston");
 
 const poseDao = require("./poseDao");
 
+exports.initViews = async function() {
+  const connection = await pool.getConnection(async (conn) => conn);
+  await poseDao.initViews(connection);
+  connection.release();
+}
+
 exports.getUserFromPose = async function (poseId) {
   const connection = await pool.getConnection(async (conn) => conn);
   const userId = await poseDao.selectUserFromPose(connection, poseId);

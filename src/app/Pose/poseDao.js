@@ -1,3 +1,12 @@
+async function initViews(connection) {
+  const initViewsQuery = `
+    update Poses p
+    set p.todayViews = 0;
+  `
+  await connection.query(initViewsQuery);
+  return
+}
+
 async function deletePose(connection, poseId) {
   const deletePoseQuery = `
         update Poses p set status = 'DELETED' where p.idx = ?
@@ -124,6 +133,14 @@ where p.idx = ? and p.status='ACTIVATE';
     poseIdx,
     poseIdx,
   ]);
+
+  const upViewsQuery = `
+    update Poses p
+    set p.views = p.views+1, p.todayViews = p.todayViews+1
+    where p.idx = ?
+  `
+  const upViewsQueryResult = await connection.query(upViewsQuery, [poseIdx])
+
   return getOnePoseRow[0];
 }
 
@@ -138,6 +155,27 @@ async function insertPose(connection, memberIdx, imageURL) {
     memberIdx,
     imageURL,
   ]);
+}
+
+// 포즈 개수 확인
+async function checkPoseCount(connection, memberIdx) {
+  const checkPoseCountQuery = `
+    select count(p.idx) poseCount
+    from Poses p
+    where p.memberIdx = ?;
+  `
+  const result = await connection.query(checkPoseCountQuery, [memberIdx]);
+  return result[0];
+}
+
+// 레벨업
+async function levelUp(connection, memberIdx, level) {
+  const levelUpQuery = `
+    update Members m
+    set m.level = ?
+    where m.idx = ?
+  `
+  await connection.query(levelUpQuery, [level, memberIdx])
 }
 
 async function getLikeInfo(connection) {
@@ -163,6 +201,7 @@ async function getStoryImageURL(connection, storyIdx) {
 }
 
 module.exports = {
+  initViews,
   deletePose,
   likePose,
   selectUserFromPose,
@@ -170,6 +209,8 @@ module.exports = {
   updateLikeStatus,
   getOnePose,
   insertPose,
+  checkPoseCount,
+  levelUp,
   getPoses,
   getLikeInfo,
   getRecommendPoses,

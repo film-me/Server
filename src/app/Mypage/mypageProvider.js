@@ -53,3 +53,11 @@ exports.getMyInfo = async function (userId) {
     
       return selectUserImgResult;
   };
+
+exports.getTodayInfo = async function(memberIdx) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const getTodayInfoResult = await mypageDao.getTodayInfo(connection, memberIdx);
+    connection.release();
+
+    return getTodayInfoResult;
+}

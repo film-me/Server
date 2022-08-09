@@ -5,6 +5,12 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { CF } = require("nodeml");
 
+// 오늘의 조회수 초기화
+exports.initViews = async function() {
+  console.log("실행");
+  await poseProvider.initViews();
+}
+
 // 포즈자랑 삭제 api
 exports.deletePose = async function (req, res) {
   let poseId = req.params.poseId;
