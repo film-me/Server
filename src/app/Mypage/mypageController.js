@@ -48,20 +48,23 @@ exports.getMyInfo = async function (req, res) {
 exports.editProfileImg = async function (req, res) {
 
   const userIdFromJWT = req.verifiedToken.userInfo;
-  const {profileImg} = req.body;
+  console.log(req.file);
+  const imageURL = req.file.location;
+  
 
   if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
-  if (!profileImg)   
+  if (!imageURL)   
   return res.json({
     isSuccess: false,
     code: 210,
     message: "변경할 사진을 선택하세요.",
   });
 
-  const editProfileImg = await mypageService.editProfileImg(userIdFromJWT,profileImg); 
-  return res.send(editProfileImg);
+  const editProfileImgResult = await mypageService.editProfileImg(userIdFromJWT,imageURL); 
+  return res.send(editProfileImgResult);
 
 };
+
 
 
 //닉네임 수정
