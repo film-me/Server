@@ -48,9 +48,73 @@ async function selectUserLikePoseList(connection, userId) {
   return selectUserInfoRow[0];
 }
 
+// 프로필 이미지 변경
+async function updateUserProfileImg(connection, userId,imageUrl) {
+
+  const updateUserProfileImgQuery = `
+  update Members set profileURL = ? where idx = ?;  
+  `;
+
+  const updateUserProfileImgRow = await connection.query(
+    updateUserProfileImgQuery, [imageUrl,userId]
+  );
+
+  return updateUserProfileImgRow[0];
+}
+
+
+
+// 닉네임 변경 
+async function updateUserNickname(connection, userId,nickname) {
+
+  const updateUserNicknameQuery = `
+  update Members set name = ? where idx = ?;  
+  `;
+
+  const updateUserNicknameRow = await connection.query(
+    updateUserNicknameQuery, [nickname,userId]
+  );
+
+  return updateUserNicknameRow[0];
+}
+
+async function selectUserNickname(connection, userId) {
+
+  const resultNicknameQuery = `
+  select name as nickname
+  from Members 
+  where idx= ?
+  `;
+
+  const resultNicknameRow = await connection.query(
+    resultNicknameQuery, userId
+  );
+
+  return resultNicknameRow[0];
+}
+
+async function selectUserImg(connection, userId) {
+
+  const selectUserImgQuery = `
+  select profileUrl 
+  from Members 
+  where idx= ?
+  `;
+
+  const selectUserImgRow = await connection.query(
+    selectUserImgQuery, userId
+  );
+
+  return selectUserImgRow[0];
+}
+
 
 module.exports = {
     selectUserPoseList,
     selectUserLikePoseList,
     selectUserInfo,
+    updateUserProfileImg,
+    updateUserNickname,
+    selectUserNickname,
+    selectUserImg,
   };
