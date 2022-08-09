@@ -108,6 +108,22 @@ async function selectUserImg(connection, userId) {
   return selectUserImgRow[0];
 }
 
+async function getTodayInfo(connection, memberIdx) {
+    const getTodayInfoQuery = `
+        select (select sum(p.todayViews)
+        from Poses p
+        where p.memberIdx = ?
+        and p.status = 'ACTIVATE') viewCount,
+       (select count(l.idx)
+        from Likes l
+        join Poses p on l.poseIdx = p.idx
+        where p.memberIdx = ?
+        and l.status = 'ACTIVATE'
+        and date_format(now(), '%Y%m%d') = date_format(l.createdAt, '%Y%m%d')) likeCount
+    `
+    const getTodayInfoRow = await connection.query(getTodayInfoQuery, [memberIdx, memberIdx])
+    return getTodayInfoRow[0]
+}
 
 module.exports = {
     selectUserPoseList,
@@ -117,4 +133,5 @@ module.exports = {
     updateUserNickname,
     selectUserNickname,
     selectUserImg,
+    getTodayInfo
   };

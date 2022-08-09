@@ -1,7 +1,13 @@
+const schedule = require("node-schedule");
+const pose = require("./poseController");
 module.exports = function (app) {
   const pose = require("./poseController");
   const jwtMiddleware = require("../../../config/jwtMiddleware");
   const imageUploader = require("./imageUploader");
+
+  // 이벤트
+  const schedule = require('node-schedule');
+  const test = schedule.scheduleJob('0 0 0 * * *', pose.initViews);
 
   // 포즈자랑 삭제 api
   app.patch("/filme/pose/:poseId", jwtMiddleware, pose.deletePose);

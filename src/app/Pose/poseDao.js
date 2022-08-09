@@ -1,3 +1,12 @@
+async function initViews(connection) {
+  const initViewsQuery = `
+    update Poses p
+    set p.todayViews = 0;
+  `
+  await connection.query(initViewsQuery);
+  return
+}
+
 async function deletePose(connection, poseId) {
   const deletePoseQuery = `
         update Poses p set status = 'DELETED' where p.idx = ?
@@ -162,6 +171,7 @@ async function getStoryImageURL(connection, storyIdx) {
 }
 
 module.exports = {
+  initViews,
   deletePose,
   likePose,
   selectUserFromPose,

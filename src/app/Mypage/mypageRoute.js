@@ -17,4 +17,7 @@ module.exports = function (app) {
   //닉네임 수정
   app.post("/filme/mypage/edit-nickname",jwtMiddleware,mypage.editNickname);
 
+  // 오늘의 조회수, 좋아요 수 조회
+  app.get("/filme/mypage/today", jwtMiddleware, mypage.getTodayInfo);
+
 };
