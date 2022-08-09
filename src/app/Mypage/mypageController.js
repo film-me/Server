@@ -82,3 +82,10 @@ exports.editProfileImg = async function (req, res) {
   return res.send(editNickname)
 
 };
+
+exports.getTodayInfo = async function(req, res) {
+  const memberIdx = req.verifiedToken.userInfo;
+
+  const getTodayInfoResult = await mypageProvider.getTodayInfo(memberIdx);
+  return res.send(getTodayInfoResult);
+}
