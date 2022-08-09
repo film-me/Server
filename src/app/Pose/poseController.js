@@ -6,10 +6,10 @@ const { response, errResponse } = require("../../../config/response");
 const { CF } = require("nodeml");
 
 // 오늘의 조회수 초기화
-exports.initViews = async function() {
+exports.initViews = async function () {
   console.log("실행");
   await poseProvider.initViews();
-}
+};
 
 // 포즈자랑 삭제 api
 exports.deletePose = async function (req, res) {
@@ -63,7 +63,7 @@ exports.getPoses = async function (req, res) {
     for (let i = 0; i < getRecommendResult.length; i++) {
       poseList.push(parseInt(getRecommendResult[i].itemId));
     }
-    console.log(poseList);
+
     let getPosesResult = await poseProvider.getRecommendPoses(poseList);
     return res.send(getPosesResult);
   }
