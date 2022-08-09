@@ -53,7 +53,7 @@ async function updateLikeStatus(connection, poseId, userId, status) {
   const updateLikeStatusQuery = `
         update Likes l
         set l.status = ?
-        where l.poseIdx = ? and l.memberIdx = ? and status='ACTIVATE';
+        where l.poseIdx = ? and l.memberIdx = ?;
     `;
   const selectLikeFromPoseandUserRow = await connection.query(
     updateLikeStatusQuery,

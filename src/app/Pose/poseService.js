@@ -52,15 +52,22 @@ exports.likePose = async function (poseId, userId) {
   }
 };
 
-exports.insertPose = async function(memberIdx, imageURL) {
+exports.insertPose = async function (memberIdx, imageURL) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
-    const insertPoseResult = await poseDao.insertPose(connection, memberIdx, imageURL);
+    const insertPoseResult = await poseDao.insertPose(
+      connection,
+      memberIdx,
+      imageURL
+    );
 
     // 레벨 업
-    const checkPoseCountResult = await poseDao.checkPoseCount(connection, memberIdx);
+    const checkPoseCountResult = await poseDao.checkPoseCount(
+      connection,
+      memberIdx
+    );
     if (checkPoseCountResult[0].poseCount % 9 == 0) {
-      const level = parseInt(checkPoseCountResult[0].poseCount / 9) + 1
+      const level = parseInt(checkPoseCountResult[0].poseCount / 9) + 1;
       await poseDao.levelUp(connection, memberIdx, level);
     }
 
