@@ -3,7 +3,7 @@ async function selectUserPoseList(connection, userId) {
   const selectUserPoseQuery = `
     select p.idx as poseIdx , p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Members M on p.memberIdx = M.idx
-    where M.idx = ? and M.status='ACTIVATE' and P.status='ACTIVATE';
+    where M.idx = ? and M.status='ACTIVATE' and p.status='ACTIVATE';
     `;
 
   const selectUserPoseRow = await connection.query(selectUserPoseQuery, [
