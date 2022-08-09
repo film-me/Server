@@ -2,14 +2,14 @@ async function initViews(connection) {
   const initViewsQuery = `
     update Poses p
     set p.todayViews = 0;
-  `
+  `;
   await connection.query(initViewsQuery);
-  return
+  return;
 }
 
 async function deletePose(connection, poseId) {
   const deletePoseQuery = `
-        update Poses p set status = 'DELETED' where p.idx = ?
+        update Poses p set status = 'DELETED' where p.idx = ? and p.status='ACTIVATE';
     `;
   const deletePoseRow = await connection.query(deletePoseQuery, poseId);
 
@@ -53,7 +53,7 @@ async function updateLikeStatus(connection, poseId, userId, status) {
   const updateLikeStatusQuery = `
         update Likes l
         set l.status = ?
-        where l.poseIdx = ? and l.memberIdx = ?
+        where l.poseIdx = ? and l.memberIdx = ? and status='ACTIVATE';
     `;
   const selectLikeFromPoseandUserRow = await connection.query(
     updateLikeStatusQuery,
@@ -137,9 +137,9 @@ where p.idx = ? and p.status='ACTIVATE';
   const upViewsQuery = `
     update Poses p
     set p.views = p.views+1, p.todayViews = p.todayViews+1
-    where p.idx = ?
-  `
-  const upViewsQueryResult = await connection.query(upViewsQuery, [poseIdx])
+    where p.idx = ? and p.status='ACTIVATE';
+  `;
+  const upViewsQueryResult = await connection.query(upViewsQuery, [poseIdx]);
 
   return getOnePoseRow[0];
 }
@@ -162,8 +162,8 @@ async function checkPoseCount(connection, memberIdx) {
   const checkPoseCountQuery = `
     select count(p.idx) poseCount
     from Poses p
-    where p.memberIdx = ?;
-  `
+    where p.memberIdx = ? and status='ACTIVATE';
+  `;
   const result = await connection.query(checkPoseCountQuery, [memberIdx]);
   return result[0];
 }
@@ -173,16 +173,16 @@ async function levelUp(connection, memberIdx, level) {
   const levelUpQuery = `
     update Members m
     set m.level = ?
-    where m.idx = ?
-  `
-  await connection.query(levelUpQuery, [level, memberIdx])
+    where m.idx = ? and status='ACTIVATE';
+  `;
+  await connection.query(levelUpQuery, [level, memberIdx]);
 }
 
 async function getLikeInfo(connection) {
   const testQuery = `
     select poseIdx, memberIdx, 10 as rate
     from Likes
-    where status='ACTIVATE'
+    where status='ACTIVATE';
   `;
   const testRow = await connection.query(testQuery);
   return testRow[0];
@@ -192,7 +192,7 @@ async function getStoryImageURL(connection, storyIdx) {
   const getStoryImageURLQuery = `
     select imageURL
     from Stories
-    where idx = ?;
+    where idx = ? and status='ACTIVATE';
   `;
   const getStoryImageURLRow = await connection.query(getStoryImageURLQuery, [
     storyIdx,

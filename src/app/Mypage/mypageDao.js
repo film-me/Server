@@ -1,40 +1,37 @@
-// 나의 포즈자랑 조회 
+// 나의 포즈자랑 조회
 async function selectUserPoseList(connection, userId) {
-    const selectUserPoseQuery = `
+  const selectUserPoseQuery = `
     select p.idx as poseIdx , p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Members M on p.memberIdx = M.idx
-    where M.idx = ?;
+    where M.idx = ? and M.status='ACTIVATE' and P.status='ACTIVATE';
     `;
 
-    const selectUserPoseRow = await connection.query(
-        selectUserPoseQuery, [userId]
-    );
-  
-    return selectUserPoseRow[0];
-  }
+  const selectUserPoseRow = await connection.query(selectUserPoseQuery, [
+    userId,
+  ]);
 
-  // 내가 좋아요 한 포즈 조회 
+  return selectUserPoseRow[0];
+}
+
+// 내가 좋아요 한 포즈 조회
 async function selectUserLikePoseList(connection, userId) {
-
-    const selectUserLikePoseQuery = `
+  const selectUserLikePoseQuery = `
     select p.idx as poseIdx , p.memberIdx as poseHostIdx, p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Likes L on p.idx = L.poseIdx
     where p.status = 'ACTIVATE' and L.status = 'ACTIVATE' #이거 주인이 삭제하면 다 삭제
           and L.memberIdx= 1 ;
     `;
 
-    const selectUserLikePoseRow = await connection.query(
-        selectUserLikePoseQuery, userId
-    );
-  
-    return selectUserLikePoseRow[0];
-  }
-  
+  const selectUserLikePoseRow = await connection.query(
+    selectUserLikePoseQuery,
+    userId
+  );
 
-  
- // 내 정보 조회
- async function selectUserInfo(connection, userId) {
+  return selectUserLikePoseRow[0];
+}
 
+// 내 정보 조회
+async function selectUserInfo(connection, userId) {
   const selectUserInfolQuery = `
   select m.profileURL , m.name as nickname , m.level
   from Members as m
@@ -42,74 +39,67 @@ async function selectUserLikePoseList(connection, userId) {
   `;
 
   const selectUserInfoRow = await connection.query(
-      selectUserInfolQuery, userId
+    selectUserInfolQuery,
+    userId
   );
 
   return selectUserInfoRow[0];
 }
 
 // 프로필 이미지 변경
-async function updateUserProfileImg(connection, userId,imageUrl) {
-
+async function updateUserProfileImg(connection, userId, imageUrl) {
   const updateUserProfileImgQuery = `
-  update Members set profileURL = ? where idx = ?;  
+  update Members set profileURL = ? where idx = ? and status='ACTIVATE';  
   `;
 
   const updateUserProfileImgRow = await connection.query(
-    updateUserProfileImgQuery, [imageUrl,userId]
+    updateUserProfileImgQuery,
+    [imageUrl, userId]
   );
 
   return updateUserProfileImgRow[0];
 }
 
-
-
-// 닉네임 변경 
-async function updateUserNickname(connection, userId,nickname) {
-
+// 닉네임 변경
+async function updateUserNickname(connection, userId, nickname) {
   const updateUserNicknameQuery = `
-  update Members set name = ? where idx = ?;  
+  update Members set name = ? where idx = ? and status='ACTIVATE'; 
   `;
 
   const updateUserNicknameRow = await connection.query(
-    updateUserNicknameQuery, [nickname,userId]
+    updateUserNicknameQuery,
+    [nickname, userId]
   );
 
   return updateUserNicknameRow[0];
 }
 
 async function selectUserNickname(connection, userId) {
-
   const resultNicknameQuery = `
   select name as nickname
   from Members 
-  where idx= ?
+  where idx= ? and status='ACTIVATE'
   `;
 
-  const resultNicknameRow = await connection.query(
-    resultNicknameQuery, userId
-  );
+  const resultNicknameRow = await connection.query(resultNicknameQuery, userId);
 
   return resultNicknameRow[0];
 }
 
 async function selectUserImg(connection, userId) {
-
   const selectUserImgQuery = `
   select profileUrl 
   from Members 
-  where idx= ?
+  where idx= ? and status='ACTIVATE'
   `;
 
-  const selectUserImgRow = await connection.query(
-    selectUserImgQuery, userId
-  );
+  const selectUserImgRow = await connection.query(selectUserImgQuery, userId);
 
   return selectUserImgRow[0];
 }
 
 async function getTodayInfo(connection, memberIdx) {
-    const getTodayInfoQuery = `
+  const getTodayInfoQuery = `
         select (select sum(p.todayViews)
         from Poses p
         where p.memberIdx = ?
@@ -120,18 +110,21 @@ async function getTodayInfo(connection, memberIdx) {
         where p.memberIdx = ?
         and l.status = 'ACTIVATE'
         and date_format(now(), '%Y%m%d') = date_format(l.createdAt, '%Y%m%d')) likeCount
-    `
-    const getTodayInfoRow = await connection.query(getTodayInfoQuery, [memberIdx, memberIdx])
-    return getTodayInfoRow[0]
+    `;
+  const getTodayInfoRow = await connection.query(getTodayInfoQuery, [
+    memberIdx,
+    memberIdx,
+  ]);
+  return getTodayInfoRow[0];
 }
 
 module.exports = {
-    selectUserPoseList,
-    selectUserLikePoseList,
-    selectUserInfo,
-    updateUserProfileImg,
-    updateUserNickname,
-    selectUserNickname,
-    selectUserImg,
-    getTodayInfo
-  };
+  selectUserPoseList,
+  selectUserLikePoseList,
+  selectUserInfo,
+  updateUserProfileImg,
+  updateUserNickname,
+  selectUserNickname,
+  selectUserImg,
+  getTodayInfo,
+};
