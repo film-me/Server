@@ -111,11 +111,11 @@ async function getRecommendPoses(connection, poseList) {
 // 특정 포즈 조회
 async function getOnePose(connection, userIdx, poseIdx) {
   const getOnePoseQuery = `
-    select m.idx, m.profileURL, m.name,p.imageURL, ifnull(x.likeCnt, 0) likeCnt, p.views, ifnull((
+  select m.idx, m.profileURL, m.name,p.imageURL, ifnull(x.likeCnt, 0) likeCnt, p.views, ifnull((
     select count(*)
     from Likes l
     where l.memberIdx = ?
-    and l.poseIdx = ?
+    and l.poseIdx = ? and l.status='ACTIVATE'
     group by l.poseIdx
     ), 0) isLike
 from Poses p
@@ -123,6 +123,7 @@ join Members m on m.idx = p.memberIdx
 left join (
     select l.poseIdx, count(*) likeCnt
     from Likes l
+    where l.status = 'ACTIVATE'
     group by l.poseIdx
     ) x on x.poseIdx = p.idx
 where p.idx = ? and p.status='ACTIVATE';
