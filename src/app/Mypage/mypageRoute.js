@@ -1,6 +1,7 @@
 module.exports = function (app) {
   const mypage = require("./mypageController");
   const jwtMiddleware = require("../../../config/jwtMiddleware");
+  const imageUploader = require("../Pose/imageUploader");
 
   // 내 포즈자랑 조회
   app.get("/filme/mypage/pose", jwtMiddleware, mypage.getMyPoseList);
@@ -11,8 +12,13 @@ module.exports = function (app) {
   // 내 정보 조회
   app.get("/filme/mypage/myinfo", jwtMiddleware, mypage.getMyInfo);
 
-  // 프로필 사진 수정
-  app.post("/filme/mypage/edit-image",jwtMiddleware,mypage.editProfileImg);
+  // 프로필 사진 수정 ( 갤러리 )
+  app.post(
+    "/filme/mypage/edit-image",
+    jwtMiddleware,
+    imageUploader.single("image"),
+    mypage.editProfileImg
+  );
 
   //닉네임 수정
   app.post("/filme/mypage/edit-nickname",jwtMiddleware,mypage.editNickname);
