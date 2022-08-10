@@ -1,15 +1,18 @@
 const express = require("express");
 const compression = require("compression");
 const methodOverride = require("method-override");
+const bodyParser = require("body-parser");
 var cors = require("cors");
 module.exports = function () {
   const app = express();
 
   app.use(compression());
 
-  app.use(express.json({ limit: "1mb" }));
+  app.use(express.json({ limit: "5mb" }));
 
-  app.use(express.urlencoded({ limit: "1mb", extended: false }));
+  app.use(express.urlencoded({ limit: "5mb", extended: false }));
+
+  app.use(bodyParser.json({ limit: 5000000 }));
 
   app.use(methodOverride());
 
