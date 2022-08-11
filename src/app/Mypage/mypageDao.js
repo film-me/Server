@@ -19,7 +19,7 @@ async function selectUserLikePoseList(connection, userId) {
     select p.idx as poseIdx , p.memberIdx as poseHostIdx, p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Likes L on p.idx = L.poseIdx
     where p.status = 'ACTIVATE' and L.status = 'ACTIVATE' #이거 주인이 삭제하면 다 삭제
-          and L.memberIdx= ? ;
+          and L.memberIdx= 1 ;
     `;
 
   const selectUserLikePoseRow = await connection.query(
@@ -48,11 +48,10 @@ async function selectUserInfo(connection, userId) {
     where m.status = 'ACTIVATE' and m.idx = ?;
   `;
 
-  const selectUserInfoRow = await connection.query(selectUserInfoQuery, [
-    userId,
-    userId,
-    userId,
-  ]);
+  const selectUserInfoRow = await connection.query(
+    selectUserInfoQuery,
+    [userId, userId, userId]
+  );
 
   return selectUserInfoRow[0];
 }
