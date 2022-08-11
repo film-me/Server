@@ -67,7 +67,7 @@ async function updateLikeStatus(connection, poseId, userId, status) {
 async function getPoses(connection, order) {
   const getPosesQuery =
     `
-    select p.idx, p.imageURL, ifnull(x.likeCnt, 0) likeCnt
+    select p.idx, p.memberIdx, p.imageURL, ifnull(x.likeCnt, 0) likeCnt
     from Poses p
            left join (
       select l.poseIdx, count(*) likeCnt
