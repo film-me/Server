@@ -18,8 +18,8 @@ exports.deletePose = async function (req, res) {
 
   const userIdFromJWT = req.verifiedToken.userInfo;
   if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
-  const userId = poseProvider.getUserFromPose(poseId);
-  if (userIdFromJWT != userId)
+  const userId = await poseProvider.getUserFromPose(poseId);
+  if (userIdFromJWT != userId.memberIdx)
     return res.send(errResponse(baseResponse.NO_RIGHT));
 
   const deletePoseResponse = await poseService.deletePose(poseId);

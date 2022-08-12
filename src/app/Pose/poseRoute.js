@@ -6,11 +6,12 @@ module.exports = function (app) {
   const imageUploader = require("./imageUploader");
 
   // 이벤트
-  const schedule = require('node-schedule');
-  const test = schedule.scheduleJob('0 0 0 * * *', pose.initViews);
+  const schedule = require("node-schedule");
+  const test = schedule.scheduleJob("0 0 0 * * *", pose.initViews);
 
   // 포즈자랑 삭제 api
   app.patch("/filme/pose/:poseId", jwtMiddleware, pose.deletePose);
+
   // 포즈 좋아요
   app.post("/filme/like/:poseId", jwtMiddleware, pose.likePose);
 
@@ -29,5 +30,5 @@ module.exports = function (app) {
   );
 
   // 6. 포즈 등록 API(스토리)
-  app.post("/filme/poseStory", jwtMiddleware, pose.insertPoseFromStory)
+  app.post("/filme/poseStory", jwtMiddleware, pose.insertPoseFromStory);
 };
