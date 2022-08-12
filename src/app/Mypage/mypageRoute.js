@@ -20,4 +20,7 @@ module.exports = function (app) {
   // 오늘의 조회수, 좋아요 수 조회
   app.get("/filme/mypage/today", jwtMiddleware, mypage.getTodayInfo);
 
+  // 다른 사용자 정보 조회
+  app.get("/filme/mypage/otherInfo/:memberIdx", jwtMiddleware, mypage.getOtherInfo);
+
 };
