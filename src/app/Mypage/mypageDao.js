@@ -19,7 +19,7 @@ async function selectUserLikePoseList(connection, userId) {
     select p.idx as poseIdx , p.memberIdx as poseHostIdx, p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Likes L on p.idx = L.poseIdx
     where p.status = 'ACTIVATE' and L.status = 'ACTIVATE' #이거 주인이 삭제하면 다 삭제
-          and L.memberIdx= 1 ;
+          and L.memberIdx= ? ;
     `;
 
   const selectUserLikePoseRow = await connection.query(
@@ -48,10 +48,11 @@ async function selectUserInfo(connection, userId) {
     where m.status = 'ACTIVATE' and m.idx = ?;
   `;
 
-  const selectUserInfoRow = await connection.query(
-    selectUserInfoQuery,
-    [userId, userId, userId]
-  );
+  const selectUserInfoRow = await connection.query(selectUserInfoQuery, [
+    userId,
+    userId,
+    userId,
+  ]);
 
   return selectUserInfoRow[0];
 }
@@ -133,17 +134,19 @@ async function getOtherInfo(connection, memberIdx) {
     select m.profileURL, m.level, m.name
     from Members m
     where m.idx = ${memberIdx};
-  `
+  `;
 
   const getPostInfoQuery = `
     select p.idx, p.imageURL
     from Poses p
     where p.status = 'ACTIVATE'
     and p.memberIdx = ${memberIdx};
-  `
+  `;
 
-  const getOtherInfoRow = await connection.query(getMemberInfoQuery + getPostInfoQuery)
-  return getOtherInfoRow[0]
+  const getOtherInfoRow = await connection.query(
+    getMemberInfoQuery + getPostInfoQuery
+  );
+  return getOtherInfoRow[0];
 }
 
 module.exports = {
@@ -155,5 +158,5 @@ module.exports = {
   selectUserNickname,
   selectUserImg,
   getTodayInfo,
-  getOtherInfo
+  getOtherInfo,
 };

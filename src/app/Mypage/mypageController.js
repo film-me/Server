@@ -44,57 +44,58 @@ exports.getMyInfo = async function (req, res) {
   return res.send(getMyInfoResponse);
 };
 
-//프로필 사진 수정  
+//프로필 사진 수정
 exports.editProfileImg = async function (req, res) {
-
   const userIdFromJWT = req.verifiedToken.userInfo;
-  const {profileImg} = req.body;
+  const imageURL = req.file.location;
 
   if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
-  if (!profileImg)   
-  return res.json({
-    isSuccess: false,
-    code: 210,
-    message: "변경할 사진을 선택하세요.",
-  });
+  if (!imageURL)
+    return res.json({
+      isSuccess: false,
+      code: 210,
+      message: "변경할 사진을 선택하세요.",
+    });
 
-  const editProfileImg = await mypageService.editProfileImg(userIdFromJWT,profileImg); 
-  return res.send(editProfileImg);
-
+  const editProfileImgResult = await mypageService.editProfileImg(
+    userIdFromJWT,
+    imageURL
+  );
+  return res.send(editProfileImgResult);
 };
 
-
 //닉네임 수정
- exports.editNickname = async function (req, res) {
-
+exports.editNickname = async function (req, res) {
   const userIdFromJWT = req.verifiedToken.userInfo;
-  const {nickname} = req.body;
+  const { nickname } = req.body;
 
   if (!userIdFromJWT) return res.send(response(baseResponse.TOKEN_EMPTY));
-  if (!nickname)   
+  if (!nickname)
     return res.json({
       isSuccess: false,
       code: 105,
       message: "닉네임을 입력 해주세요.",
     });
-      
-  const editNickname = await mypageService.editNickname(userIdFromJWT,nickname); 
-  return res.send(editNickname)
 
+  const editNickname = await mypageService.editNickname(
+    userIdFromJWT,
+    nickname
+  );
+  return res.send(editNickname);
 };
 
-exports.getTodayInfo = async function(req, res) {
+exports.getTodayInfo = async function (req, res) {
   const memberIdx = req.verifiedToken.userInfo;
 
   const getTodayInfoResult = await mypageProvider.getTodayInfo(memberIdx);
   return res.send(getTodayInfoResult);
-}
+};
 
 // 다른 사람 정보 조회
-exports.getOtherInfo = async function(req, res) {
+exports.getOtherInfo = async function (req, res) {
   const memberIdx = req.params.memberIdx;
-  console.log(memberIdx)
+  console.log(memberIdx);
 
   const getOtherInfoResult = await mypageProvider.getOtherInfo(memberIdx);
   return res.send(getOtherInfoResult);
-}
+};
