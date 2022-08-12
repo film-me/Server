@@ -89,3 +89,12 @@ exports.getTodayInfo = async function(req, res) {
   const getTodayInfoResult = await mypageProvider.getTodayInfo(memberIdx);
   return res.send(getTodayInfoResult);
 }
+
+// 다른 사람 정보 조회
+exports.getOtherInfo = async function(req, res) {
+  const memberIdx = req.params.memberIdx;
+  console.log(memberIdx)
+
+  const getOtherInfoResult = await mypageProvider.getOtherInfo(memberIdx);
+  return res.send(getOtherInfoResult);
+}

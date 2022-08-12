@@ -128,6 +128,24 @@ async function getTodayInfo(connection, memberIdx) {
   return getTodayInfoRow[0];
 }
 
+async function getOtherInfo(connection, memberIdx) {
+  const getMemberInfoQuery = `
+    select m.profileURL, m.level, m.name
+    from Members m
+    where m.idx = ${memberIdx};
+  `
+
+  const getPostInfoQuery = `
+    select p.idx, p.imageURL
+    from Poses p
+    where p.status = 'ACTIVATE'
+    and p.memberIdx = ${memberIdx};
+  `
+
+  const getOtherInfoRow = await connection.query(getMemberInfoQuery + getPostInfoQuery)
+  return getOtherInfoRow[0]
+}
+
 module.exports = {
   selectUserPoseList,
   selectUserLikePoseList,
@@ -137,4 +155,5 @@ module.exports = {
   selectUserNickname,
   selectUserImg,
   getTodayInfo,
+  getOtherInfo
 };
