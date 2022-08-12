@@ -8,11 +8,11 @@ module.exports = function () {
 
   app.use(compression());
 
-  app.use(express.json({ limit: "5mb" }));
+  app.use(express.json({ limit: "10mb" }));
 
-  app.use(express.urlencoded({ limit: "5mb", extended: false }));
+  app.use(express.urlencoded({ limit: "10mb", extended: false }));
 
-  app.use(bodyParser.json({ limit: 5000000 }));
+  app.use(bodyParser.json({ limit: 10000000 }));
 
   app.use(methodOverride());
 
