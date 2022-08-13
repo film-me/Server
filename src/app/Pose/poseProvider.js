@@ -15,7 +15,7 @@ exports.getUserFromPose = async function (poseId) {
   const connection = await pool.getConnection(async (conn) => conn);
   const userId = await poseDao.selectUserFromPose(connection, poseId);
   connection.release();
-  return userId[0].memberIdx;
+  return userId[0];
 };
 
 exports.getLike = async function (poseId, userId) {
