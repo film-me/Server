@@ -7,9 +7,9 @@ module.exports = function () {
 
   app.use(compression());
 
-  app.use(express.json({ limit: "50mb" }));
+  app.use(express.json({ limit: 50000000 }));
 
-  app.use(express.urlencoded({ limit: "50mb", extended: false }));
+  app.use(express.urlencoded({ limit: 50000000, extended: false }));
 
   app.use(methodOverride());
 
