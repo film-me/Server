@@ -92,16 +92,26 @@ async function getPoses(connection, order) {
 async function getRecommendPoses(connection, poseList) {
   let Query;
   Query = `
-  select idx, memberIdx, imageURL, (select count(*) from Likes where Likes.poseIdx = Poses.idx) as likeCnt
+  select idx, memberIdx, imageURL, ifnull(x.likeCnt, 0) likeCnt
   from Poses
+  left join (
+      select l.poseIdx, count(*) likeCnt
+      from Likes l
+      group by l.poseIdx
+    ) x on x.poseIdx = Poses.idx
   where status = 'ACTIVATE' and idx in (${poseList})
   order by FIELD(idx, ${poseList});
   `;
   const recommendData = await connection.query(Query);
 
   Query = `
-  select idx, memberIdx, imageURL, (select count(*) from Likes where Likes.poseIdx = Poses.idx) as likeCnt
+  select idx, memberIdx, imageURL, ifnull(x.likeCnt, 0) likeCnt
   from Poses
+  left join (
+      select l.poseIdx, count(*) likeCnt
+      from Likes l
+      group by l.poseIdx
+    ) x on x.poseIdx = Poses.idx
   where status = 'ACTIVATE' and idx not in (${poseList})
   order by createdAt desc;
   `;
