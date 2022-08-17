@@ -3,7 +3,8 @@ async function selectUserPoseList(connection, userId) {
   const selectUserPoseQuery = `
     select p.idx as poseIdx , p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Members M on p.memberIdx = M.idx
-    where M.idx = ? and M.status='ACTIVATE' and p.status='ACTIVATE';
+    where M.idx = ? and M.status='ACTIVATE' and p.status='ACTIVATE'
+    order by p.createdAt DESC;
     `;
 
   const selectUserPoseRow = await connection.query(selectUserPoseQuery, [
@@ -19,7 +20,8 @@ async function selectUserLikePoseList(connection, userId) {
     select p.idx as poseIdx , p.memberIdx as poseHostIdx, p.imageURL as poseImgUrl, p.views as viewCount
     from Poses as p join Likes L on p.idx = L.poseIdx
     where p.status = 'ACTIVATE' and L.status = 'ACTIVATE' #이거 주인이 삭제하면 다 삭제
-          and L.memberIdx= ? ;
+          and L.memberIdx= ? 
+    order by p.createdAt DESC;
     `;
 
   const selectUserLikePoseRow = await connection.query(
@@ -140,7 +142,8 @@ async function getOtherInfo(connection, memberIdx) {
     select p.idx, p.imageURL
     from Poses p
     where p.status = 'ACTIVATE'
-    and p.memberIdx = ${memberIdx};
+    and p.memberIdx = ${memberIdx}
+    order by p.createdAt DESC;
   `;
 
   const getOtherInfoRow = await connection.query(

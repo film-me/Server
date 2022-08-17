@@ -2,7 +2,8 @@ async function selectStory(connection, userId) {
   const selectStoryQuery = `
         select s.idx, s.memberIdx, s.imageURL, s.content, date_format(s.date,'%Y.%m.%d') as date
         from Stories s
-        where s.memberIdx = ? and s.status = 'ACTIVATE';
+        where s.memberIdx = ? and s.status = 'ACTIVATE'
+        order by s.createdAt DESC;
     `;
   const selectStoryRow = await connection.query(selectStoryQuery, userId);
 
