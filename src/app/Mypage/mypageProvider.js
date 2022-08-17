@@ -61,3 +61,12 @@ exports.getTodayInfo = async function(memberIdx) {
 
     return getTodayInfoResult;
 }
+
+exports.getOtherInfo = async function(memberIdx) {
+    const connection = await pool.getConnection(async(conn) => conn);
+    const getOtherInfoResult = await mypageDao.getOtherInfo(connection, memberIdx);
+    console.log(getOtherInfoResult);
+    connection.release();
+
+    return getOtherInfoResult;
+}

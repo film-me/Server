@@ -27,8 +27,8 @@ async function likePose(connection, poseId, userId) {
 async function selectUserFromPose(connection, poseId) {
   const getUserIdFromPoseQuery = `
         select memberIdx
-        from Poses
-        where idx = ? and status = 'ACTIVATE'
+        from Poses p
+        where p.idx = ? and p.status = 'ACTIVATE'
     `;
   const selectUserFromPoseRow = await connection.query(
     getUserIdFromPoseQuery,
@@ -56,7 +56,7 @@ async function updateLikeStatus(connection, poseId, userId, status) {
   const updateLikeStatusQuery = `
         update Likes l
         set l.status = ?
-        where l.poseIdx = ? and l.memberIdx = ? and status='ACTIVATE';
+        where l.poseIdx = ? and l.memberIdx = ?;
     `;
   const selectLikeFromPoseandUserRow = await connection.query(
     updateLikeStatusQuery,
