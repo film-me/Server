@@ -37,12 +37,12 @@ async function selectUserInfo(connection, userId) {
            mod((
               select count(p.idx)
               from Poses p
-              where p.memberIdx = ?
+              where p.memberIdx = ? and p.status = 'ACTIVATE'
             ), 9) totalStamp, 
               (9-mod((
                select count(p.idx)
                from Poses p
-               where p.memberIdx = ?
+               where p.memberIdx = ? and p.status = 'ACTIVATE'
              ), 9)) remain
     from Members as m
     where m.status = 'ACTIVATE' and m.idx = ?;
