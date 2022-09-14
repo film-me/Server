@@ -4,6 +4,7 @@ const poseProvider = require("./poseProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { CF } = require("nodeml");
+const { setCache } = require("../../../config/redis");
 
 // 오늘의 조회수 초기화
 exports.initViews = async function () {
@@ -65,10 +66,12 @@ exports.getPoses = async function (req, res) {
     }
 
     let getPosesResult = await poseProvider.getRecommendPoses(poseList);
+    setCache("pose/" + filter, getPosesResult);
     return res.send(getPosesResult);
   }
 
   const getPosesResult = await poseProvider.getPoses(filter);
+  setCache("pose/" + filter, getPosesResult);
   return res.send(getPosesResult);
 };
 
