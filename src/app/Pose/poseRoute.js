@@ -1,5 +1,6 @@
 const schedule = require("node-schedule");
 const pose = require("./poseController");
+const { checkCache, getPosesCache } = require("../../../config/redis");
 module.exports = function (app) {
   const pose = require("./poseController");
   const jwtMiddleware = require("../../../config/jwtMiddleware");
@@ -16,10 +17,10 @@ module.exports = function (app) {
   app.post("/filme/like/:poseId", jwtMiddleware, pose.likePose);
 
   // 3. 포즈 전체 조회 API
-  app.get("/filme/pose", jwtMiddleware, pose.getPoses);
+  app.get("/filme/pose", getPosesCache, jwtMiddleware, pose.getPoses);
 
   // 4. 특정 포즈 조회 API
-  app.get("/filme/pose/:poseIdx", jwtMiddleware, pose.getOnePose);
+  app.get("/filme/pose/:poseId", jwtMiddleware, pose.getOnePose);
 
   // 5. 포즈 등록 API(갤러리)
   app.post(

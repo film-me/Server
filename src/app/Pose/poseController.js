@@ -4,6 +4,7 @@ const poseProvider = require("./poseProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { CF } = require("nodeml");
+const { setCache } = require("../../../config/redis");
 
 // 오늘의 조회수 초기화
 exports.initViews = async function () {
@@ -39,49 +40,47 @@ exports.likePose = async function (req, res) {
 /**
  * API No. 3
  * API Name : 포즈 전체 조회
- * [GET] filme/pose
+ * [GET] filme/pose?filter=?
  */
 exports.getPoses = async function (req, res) {
   const filter = req.query.filter; // 1. 최신 순, 2. 좋아요 순, 3. 추천 순(수정 필요)
   const userIdx = req.verifiedToken.userInfo;
   if (!userIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
-
   if (filter == 3) {
     let likeInfoResult = await poseProvider.getLikeInfo();
     likeInfoResult = Object.values(JSON.parse(JSON.stringify(likeInfoResult)));
-
     const cf = new CF();
 
     cf.maxRelatedItem = 30;
     cf.maxRelatedUser = 30;
 
     cf.train(likeInfoResult, "memberIdx", "poseIdx", "rate");
-
     let getRecommendResult = cf.recommendToUser(userIdx, 30); // userIdx에게 count개의 pose추천
     let poseList = [];
-
     for (let i = 0; i < getRecommendResult.length; i++) {
       poseList.push(parseInt(getRecommendResult[i].itemId));
     }
 
     let getPosesResult = await poseProvider.getRecommendPoses(poseList);
+    setCache("pose/" + filter, getPosesResult);
     return res.send(getPosesResult);
   }
 
   const getPosesResult = await poseProvider.getPoses(filter);
+  setCache("pose/" + filter, getPosesResult);
   return res.send(getPosesResult);
 };
 
 /**
  * API No. 4
  * API Name : 특정 포즈 조회
- * [GET] filme/pose/:poseIdx
+ * [GET] filme/pose/:poseId
  */
 exports.getOnePose = async function (req, res) {
-  const poseIdx = req.params.poseIdx;
-  const userIdx = req.verifiedToken.userInfo;
-  if (!userIdx) return res.send(response(baseResponse.TOKEN_EMPTY));
-  const getOnePoseResponse = await poseProvider.getOnePose(userIdx, poseIdx);
+  const poseId = req.params.poseId;
+  const userId = req.verifiedToken.userInfo;
+  if (!userId) return res.send(response(baseResponse.TOKEN_EMPTY));
+  const getOnePoseResponse = await poseProvider.getOnePose(userId, poseId);
 
   return res.send(getOnePoseResponse);
 };
