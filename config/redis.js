@@ -2,7 +2,8 @@ const redis = require("redis");
 const bluebird = require("bluebird");
 bluebird.promisifyAll(redis);
 const redisClient = redis.createClient({
-  url: `redis-19304.c267.us-east-1-4.ec2.cloud.redislabs.com:19304`,
+  host: `127.0.0.1`,
+  port: 6379,
   legacyMode: true,
 });
 redisClient.on(`connect`, () => {
@@ -20,7 +21,7 @@ const setCache = async (key, value) => {
 };
 
 const deleteCache = async (key) => {
-  await redisClient.delAsync(key);
+  await redisCli.delAsync(key);
 };
 
 const getPosesCache = async (req, res, next) => {

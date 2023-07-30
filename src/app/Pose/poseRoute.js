@@ -20,7 +20,7 @@ module.exports = function (app) {
   app.get("/filme/pose", getPosesCache, jwtMiddleware, pose.getPoses);
 
   // 4. 특정 포즈 조회 API
-  app.get("/filme/pose/:poseIdx", jwtMiddleware, pose.getOnePose);
+  app.get("/filme/pose/:poseId", jwtMiddleware, pose.getOnePose);
 
   // 5. 포즈 등록 API(갤러리)
   app.post(

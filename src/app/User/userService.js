@@ -35,7 +35,6 @@ exports.createUser = async function (
     const insertUserParams = [identification, hashedPassword, name, profileURL];
 
     const connection = await pool.getConnection(async (conn) => conn);
-
     const userIdResult = await userDao.insertUser(connection, insertUserParams);
     console.log(`추가된 회원 : ${userIdResult[0].insertId}`);
     connection.release();
