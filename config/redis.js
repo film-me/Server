@@ -17,7 +17,7 @@ const redisCli = redisClient.v4;
 
 const setCache = async (key, value) => {
   await redisCli.set(key, JSON.stringify(value));
-  await redisCli.expire(key, 3600);
+  await redisCli.expire(key, 300);
 };
 
 const deleteCache = async (key) => {
@@ -29,9 +29,6 @@ const getPosesCache = async (req, res, next) => {
   try {
     const data = JSON.parse(await redisCli.get(key));
     if (data) {
-      if (redisCli.ttl(key) < 300) {
-        await redisCli.setex(key, 3600, data);
-      }
       res.status(200).json({
         data: data,
       });
